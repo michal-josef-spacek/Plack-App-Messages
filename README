@@ -1,0 +1,130 @@
+NAME
+    Plack::App::Messages - Plack messages application.
+
+SYNOPSIS
+     use Plack::App::Messages;
+
+     my $obj = Plack::App::Messages->new(%parameters);
+     my $psgi_ar = $obj->call($env);
+     my $app = $obj->to_app;
+
+DESCRIPTION
+    Plack application which print messages from session. Session field is
+    'messages' and contain reference to array with Data::Message::Simple
+    instances. In case of no session, there is no processing of messages.
+
+METHODS
+  "new"
+     my $obj = Plack::App::Messages->new(%parameters);
+
+    Constructor.
+
+    Returns instance of object.
+
+    *       "css"
+
+            Instance of CSS::Struct::Output object.
+
+            Default value is CSS::Struct::Output::Raw instance.
+
+    *       "generator"
+
+            HTML generator string.
+
+            Default value is 'Plack::App::Login; Version: __VERSION__'.
+
+    *       "messages"
+
+            Set list of default messages to Plack session. Each message must
+            be a Data::Message::Simple instance.
+
+            Default value is undef.
+
+    *       "tags"
+
+            Instance of Tags::Output object.
+
+            Default value is Tags::Output::Raw->new('xml' => 1) instance.
+
+    *       "title"
+
+            Page title.
+
+            Default value is 'Login page'.
+
+  "call"
+     my $psgi_ar = $obj->call($env);
+
+    Implementation of login page.
+
+    Returns reference to array (PSGI structure).
+
+  "to_app"
+     my $app = $obj->to_app;
+
+    Creates Plack application.
+
+    Returns Plack::Component object.
+
+ERRORS
+     TODO
+
+EXAMPLE
+     use strict;
+     use warnings;
+
+     use CSS::Struct::Output::Indent;
+     use Plack::App::Messages;
+     use Plack::Runner;
+     use Tags::Output::Indent;
+
+     # Run application.
+     my $app = Plack::App::Messages->new(
+             'css' => CSS::Struct::Output::Register->new,
+             'messages' => [
+                     Data::Message::Simple->new(
+                             'text' => 'Error message.',
+                             'type' => 'error',
+                     ),
+                     Data::Message::Simple->new(
+                             'text' => 'Info message.',
+                             'type' => 'info',
+                     ),
+             ],
+             'tags' => Tags::Output::Indent->new(
+                     'preserved' => ['style'],
+                     'xml' => 1,
+             ),
+     )->to_app;
+     Plack::Runner->new->run($app);
+
+     # Output:
+     # HTTP::Server::PSGI: Accepting connections at http://0:5000/
+
+     # > curl http://localhost:5000/
+     # TODO
+
+DEPENDENCIES
+    Error::Pure, Plack::Component::Tags::HTML, Plack::Util::Accessor,
+    Plack::Session, Scalar::Util, Tags::HTML::Messages.
+
+SEE ALSO
+    Plack::App::Login
+        Plack login application.
+
+REPOSITORY
+    <https://github.com/michal-josef-spacek/Plack-App-Register>
+
+AUTHOR
+    Michal Josef Špaček <mailto:skim@cpan.org>
+
+    <http://skim.cz>
+
+LICENSE AND COPYRIGHT
+    © 2023 Michal Josef Špaček
+
+    BSD 2-Clause License
+
+VERSION
+    0.01
+
