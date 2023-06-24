@@ -74,13 +74,14 @@ EXAMPLE
      use warnings;
 
      use CSS::Struct::Output::Indent;
+     use Data::Message::Simple;
      use Plack::App::Messages;
      use Plack::Runner;
      use Tags::Output::Indent;
 
      # Run application.
      my $app = Plack::App::Messages->new(
-             'css' => CSS::Struct::Output::Register->new,
+             'css' => CSS::Struct::Output::Indent->new,
              'messages' => [
                      Data::Message::Simple->new(
                              'text' => 'Error message.',
